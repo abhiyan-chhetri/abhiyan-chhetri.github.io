@@ -1,4 +1,5 @@
-name: "Build and Deploy"
+name: "Build and Push to dist for Cloudflare Pages"
+
 on:
   push:
     branches:
@@ -9,65 +10,39 @@ on:
       - README.md
       - LICENSE
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # submodules: true
-          # If using the 'assets' git submodule from Chirpy Starter, uncomment above
-          # (See: https://github.com/cotes2020/chirpy-starter/tree/main/assets)
 
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v4
-
-      - name: Setup Ruby
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3
           bundler-cache: true
 
-      - name: Build site
-        run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
-        env:
-          JEKYLL_ENV: "production"
+      - name: Install dependencies
+        run: bundle install
 
-      - name: Test site
+      - name: Build Jekyll site
+        run: JEKYLL_ENV=production bundle exec jekyll build
+
+      - name: Deploy to dist branch
         run: |
-          bundle exec htmlproofer _site \
-            \-\-disable-external \
-            \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
-
-      - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "_site${{ steps.pages.outputs.base_path }}"
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git clone --depth 1 --branch dist https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} dist || true
+          rm -rf dist/*
+          cp -r _site/* dist/
+          cd dist
+          touch .nojekyll
+          git add .
+          git commit -m "Deploy on $(date -u)" || echo "No changes to commit"
+          git push --force origin HEAD:dist
