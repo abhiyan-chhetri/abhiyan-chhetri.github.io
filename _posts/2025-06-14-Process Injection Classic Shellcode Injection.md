@@ -11,7 +11,7 @@ Welcome to another post in the Malware Development series. In this article, we�
 
 ## What is Classic Shellcode Injection?
 
-Classic shellcode injection is the process of injecting raw, position-independent code (shellcode) into the memory of another running process and then executing it. Shellcode is typically a small, handcrafted assembly payload designed to perform a specific action, such as spawning a shell or downloading a file. Unlike PE injection, shellcode is just a sequence of CPU instructions with no headers or sections[5](https://rioasmara.com/2025/05/30/shellcode-the-art-of-in-memory-code-injection-a-deep-dive-for-security-enthusiasts/)[6](https://redfoxsec.com/blog/process-injection-harnessing-the-power-of-shellcode/).
+Classic shellcode injection is the process of injecting raw, position-independent code (shellcode) into the memory of another running process and then executing it. Shellcode is typically a small, handcrafted assembly payload designed to perform a specific action, such as spawning a shell or downloading a file. Unlike PE injection, shellcode is just a sequence of CPU instructions with no headers or sections.
 
 ---
 
@@ -32,6 +32,7 @@ Classic shellcode injection is the process of injecting raw, position-independen
 First, you need to identify the process you want to inject into. This could be any running process—commonly something benign like `notepad.exe` or `explorer.exe`. You can enumerate processes using APIs like `CreateToolhelp32Snapshot` or, for demonstration, use `FindWindow` to get a PID by window name.
 
 **Sample Code:**
+
 ```Cpp
 // Example: Find the PID of Notepad by its window title
 HWND hwnd = FindWindowW(L"Notepad", NULL);
@@ -45,7 +46,6 @@ if (targetPID == 0) {
 }
 
 ```
-
 
 ---
 
