@@ -7,7 +7,7 @@ tags: [windows, shellcode, injection, process-injection, cpp]
 
 Welcome to another post in the Malware Development series. In this article, we’ll break down **Classic Shellcode Injection**—one of the most fundamental and widely used process injection techniques. We’ll explain each step in detail, describe what’s happening under the hood, and provide clear C code samples along the way. At the end, you’ll find a full working example.
 
---
+---
 
 ## What is Classic Shellcode Injection?
 
