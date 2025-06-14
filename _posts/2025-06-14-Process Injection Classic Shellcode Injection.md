@@ -29,8 +29,6 @@ Classic shellcode injection is the process of injecting raw, position-independen
 ## Step-by-Step Classic Shellcode Injection
 
 ## 1. Locate the Target Process
-
-**Description:**  
 First, you need to identify the process you want to inject into. This could be any running process—commonly something benign like `notepad.exe` or `explorer.exe`. You can enumerate processes using APIs like `CreateToolhelp32Snapshot` or, for demonstration, use `FindWindow` to get a PID by window name.
 
 **Sample Code:**
@@ -53,7 +51,6 @@ if (targetPID == 0) {
 
 ## 2. Obtain a Handle to the Target Process
 
-**Description:**  
 With the PID in hand, you need to open the process with sufficient privileges to allocate memory, write to it, and create threads.
 
 **Sample Code:**
@@ -74,7 +71,6 @@ if (hProcess == NULL) {
 
 ## 3. Allocate Memory in the Target Process
 
-**Description:**  
 You must allocate a memory region in the target process that is large enough for your shellcode and marked as executable. This is done with `VirtualAllocEx`.
 
 **Sample Code:**
@@ -100,7 +96,6 @@ if (remoteMem == NULL) {
 
 ## 4. Write the Shellcode to the Allocated Memory
 
-**Description:**  
 Now, copy your shellcode from your process into the target process’s memory using `WriteProcessMemory`.
 
 **Sample Code:**
@@ -118,7 +113,6 @@ if (!WriteProcessMemory(hProcess, remoteMem, shellcode, shellcodeSize, NULL)) {
 
 ## 5. Execute the Injected Shellcode
 
-**Description:**  
 Finally, create a new thread in the target process that starts execution at the address of your shellcode. This is done with `CreateRemoteThread`.
 
 **Sample Code:**
